@@ -139,33 +139,4 @@ class AnalysisModel:
     def __init__(self, df):
         self._df = df
 
-    def get_correlation(self, columns='all'):
-        if columns == 'all':
-            res = self._df.corr()
-        elif set(columns).issubset(set(self._df.columns.tolist())):
-            res = self._df[columns].corr()
-
-    def get_covariance(self, columns='all'):
-        if columns == 'all':
-            res = self._df.cov()
-        elif set(columns).issubset(set(self._df.columns.tolist())):
-            res = self._df[columns].cov()
-
-    def group_by_mart(self, cat_cols='all', num_cols='all'):
-        """Group by all the categorical columns starting from one to
-        multiple and get the various aggregated value for the numeric
-        column.
-
-        Args:
-        Returns:
-        """
-        pass
-
-    def date_analysis(self, group_by=None, cols='all'):
-        """Analyze on the basis of date both numeric and categorical"""
-        pass
-
-    def category_analysis(self, cat_cols='all'):
-        """Analyze the similarity in category"""
-        pass
 
