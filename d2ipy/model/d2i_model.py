@@ -1,8 +1,12 @@
 """
 This module applies various features to the dataframe object
 """
+import pandas as pd
+from typing import List, Dict, Any, Tuple
+
 from d2ipy.profiling import descriptive_util
 from d2ipy.profiling.descriptive_util import DescriptiveDetails
+from d2ipy.analysis.analysis_util import Analyzer
 
 
 class ProfileModel:
@@ -138,5 +142,45 @@ class ProfileModel:
 class AnalysisModel:
     def __init__(self, df):
         self._df = df
+        self.filtered_df = None
+        self._analyzer_obj = None
+        self._corr_matrix = None
+        self._cov_matrix = None
+        self.date_df = None
+        self.date_dist = None
+
+        self.init_analyzer()
+
+    def init_analyzer(self) -> None:
+        """ Initialize the Analyzer class """
+        self._analyzer_obj = Analyzer(self._df)
+        self.filtered_df = self._analyzer_obj.filtered_df
+
+    def set_correlation(self) -> None:
+        """ Set the correlation values """
+        self._corr_matrix = self._analyzer_obj.get_correlation()
+
+    def get_correlation(self) -> dict:
+        """ Return the correlation matrix """
+        self.set_correlation()
+        return self._corr_matrix
+
+    def set_covariance(self) -> None:
+        """ Set the covariance matrix """
+        self._cov_matrix = self._analyzer_obj.get_covariance()
+
+    def get_covariance(self) -> pd.DataFrame:
+        """ Return the covariance matrix """
+        self.set_covariance()
+        return self._cov_matrix
+
+    def set_date_distribution(self) -> None:
+        """ Set the date distribution of the dataframe """
+        self.date_dist, self.date_df = self._analyzer_obj.date_distribution()
+
+    def get_date_distribution(self) -> List[Dict[str, Any]:
+        """Get the date distribution"""
+        self.set_date_distribution()
+        return self.date_dist
 
 
