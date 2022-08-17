@@ -5,8 +5,9 @@ __email__ = 'audreyr@example.com'
 __version__ = '0.1.0'
 
 from d2ipy.profiling import profiling
-
+from d2ipy.analysis import analysis_util
 
 __all__ = [
-    "profiling"
+    "profiling",
+    "analysis_util"
 ]

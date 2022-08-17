@@ -156,6 +156,7 @@ class Analyzer:
             None
         """
         self.cat_analysis = self.filtered_df.groupby(cols).agg('count')
+        return self.cat_analysis
 
     def decile_numeric_analysis(self, col: str) -> Tuple[List[Any], List[Any], List[Any]]:
         """

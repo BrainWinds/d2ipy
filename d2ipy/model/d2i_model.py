@@ -148,6 +148,13 @@ class AnalysisModel:
         self._cov_matrix = None
         self.date_df = None
         self.date_dist = None
+        self.cat_num_analyzer = None
+        self.cat_cat_analyzer = None
+        self.date_numeric_analyzer = None
+        self.cat_grp_analysis = None
+        self.decile_cat_analysis = None
+        self.decile_numeric_analysis = None
+        self.decile_date_analysis = None
 
         self.init_analyzer()
 
@@ -178,9 +185,64 @@ class AnalysisModel:
         """ Set the date distribution of the dataframe """
         self.date_dist, self.date_df = self._analyzer_obj.date_distribution()
 
-    def get_date_distribution(self) -> List[Dict[str, Any]:
+    @property
+    def get_date_distribution(self) -> None:
         """Get the date distribution"""
         self.set_date_distribution()
         return self.date_dist
 
+    def get_date_df(self):
+        """ Return the date part of the dataframe """
+        return self.date_df
+
+    def set_category_analysis(self, col_name) -> None:
+        """ Set the categorical analysis values """
+        self.cat_num_analyzer, self.cat_cat_analyzer, self.date_numeric_analyzer = self._analyzer_obj.analyze_category(col_name)
+
+    def get_category_analysis(self, col_name, type_analysis='all') -> Any:
+        """ Get the analysis for categorical column """
+        self.set_category_analysis(col_name)
+        if type_analysis == 'numeric':
+            return self.cat_num_analyzer
+        elif type_analysis == 'categorical':
+            return self.cat_cat_analyzer
+        elif type_analysis == 'date':
+            return self.date_numeric_analyzer
+        elif type_analysis == 'all':
+            return {
+                "category_category": self.cat_cat_analyzer,
+                "category_numeric": self.cat_num_analyzer,
+                "category_date": self.date_numeric_analyzer
+            }
+        else:
+            raise
+
+    def set_category_grp_details(self, cols: List) -> None:
+        """ Set the group by categorical column"""
+        self.cat_grp_analysis = self._analyzer_obj.get_category_details(cols)
+
+    def get_category_details(self, cols: List) -> pd.DataFrame:
+        self.set_category_grp_details(cols)
+        return self.cat_grp_analysis
+
+    def set_decile_analysis(self, col: str) -> None:
+        """ Set various output for deciling the numeric variable """
+        self.decile_cat_analysis, self.decile_numeric_analysis, self.decile_date_analysis = self._analyzer_obj.decile_numeric_analysis(col)
+
+    def get_decile_analysis(self, col_name: str, type_analysis='all'):
+        """ Return the analysis done for the deciling system """
+        if type_analysis == 'numeric':
+            return self.decile_numeric_analysis
+        elif type_analysis == 'categorical':
+            return self.decile_cat_analysis
+        elif type_analysis == 'date':
+            return self.decile_date_analysis
+        elif type_analysis == 'all':
+            return {
+                "decile_category": self.decile_cat_analysis,
+                "decile_numeric": self.decile_numeric_analysis,
+                "decile_date": self.decile_date_analysis
+            }
+        else:
+            raise
 
