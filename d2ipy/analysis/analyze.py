@@ -6,7 +6,7 @@ class Analyzer:
     def __init__(self):
         pass
 
-    def read_csv(self, csv_path):
+    def read_csv(self, csv_path: str) -> object:
         csv_reader = read_flat_file.ReadCSV(csv_path)
         df_shape = csv_reader.get_df_size()
         _df = csv_reader.get_df()

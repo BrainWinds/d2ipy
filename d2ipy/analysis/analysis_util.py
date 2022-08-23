@@ -1,5 +1,5 @@
 """
-This module is for data analysis
+This module is for data analysis2
 """
 from typing import List, Dict, Any, Tuple
 
@@ -7,16 +7,16 @@ from d2ipy.profiling import descriptive_util
 import pandas as pd
 
 
-class Analyzer:
+class AnalysisUtil:
     """
-    This class is written for data analysis. This class will have different analysis
+    This class is written for data analysis2. This class will have different analysis2
     on multivariate front.
 
     Attributes:
         _df: pd.DataFrame
-            The dataframe being used in the analysis.
+            The dataframe being used in the analysis2.
         _desc_obj: descriptive_util.DescriptiveDetails
-            The descriptive analysis class.
+            The descriptive analysis2 class.
         _meta_data: pd.DataFrame
             The metadata dataframe which contains various details like datatype,
             fill rate etc.
@@ -27,19 +27,19 @@ class Analyzer:
         cov_matrix: pd.DataFrame
             The covariance matrix for numerical data.
         date_category_analyzer: List
-            List of dataframes which contains categorical analysis on date.
+            List of dataframes which contains categorical analysis2 on date.
         date_numeric_analyzer: List
-            List of analysis on numeric data after grouping by date
+            List of analysis2 on numeric data after grouping by date
         cat_num_analyzer: List
-            List of analysis on numeric columns after grouping by categorical
+            List of analysis2 on numeric columns after grouping by categorical
             columns.
         cat_cat_analyzer: List
-            List of analysis on categorical columns after grouping by another
+            List of analysis2 on categorical columns after grouping by another
             categorical column.
         self.cat_analysis: df.DataFrame
-            Dataframe of categorical analysis
+            Dataframe of categorical analysis2
         self.num_analysis: pd.DataFrame
-            Dataframe of numerical analysis which contains numeric column as
+            Dataframe of numerical analysis2 which contains numeric column as
             categorical by deciling it.
 
     Methods:
@@ -80,7 +80,7 @@ class Analyzer:
         self.cov_matrix = self.filtered_df.cov()
 
     def date_distribution(self) -> Tuple[List[Dict[str, Any]], Any]:
-        """ Get the date wise analysis here """
+        """ Get the date wise analysis2 here """
         self.date_cols = self._meta_data.loc[self._meta_data
                                              ['present_datatype'] == "datetime",
                                              "columns"].tolist()
@@ -111,11 +111,11 @@ class Analyzer:
 
     def analyze_category(self, col_name: str) -> Tuple[List[Any], List[Any], List[Any]]:
         """
-        Get the analysis on categorical columns
+        Get the analysis2 on categorical columns
 
         Args:
             col_name: str
-                The categorical column, on which basis the analysis will be built
+                The categorical column, on which basis the analysis2 will be built
         Returns:
             None
         """
@@ -151,7 +151,7 @@ class Analyzer:
 
         Args:
             cols: List[str]
-                The column names on which basis the group wise analysis is going to happen
+                The column names on which basis the group wise analysis2 is going to happen
         Returns:
             None
         """
@@ -160,11 +160,11 @@ class Analyzer:
 
     def decile_numeric_analysis(self, col: str) -> Tuple[List[Any], List[Any], List[Any]]:
         """
-        Decile the numeric values and get the analysis by treating it as a category
+        Decile the numeric values and get the analysis2 by treating it as a category
 
         Args:
              col: str
-                The columns which will be used for analysis
+                The columns which will be used for analysis2
         Returns:
              None
         """

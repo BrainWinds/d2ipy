@@ -6,14 +6,14 @@ from typing import List, Dict, Any, Tuple
 
 from d2ipy.profiling import descriptive_util
 from d2ipy.profiling.descriptive_util import DescriptiveDetails
-from d2ipy.analysis.analysis_util import Analyzer
+from d2ipy.analysis.analysis_util import AnalysisUtil
 
 
 class ProfileModel:
     """
     This is the mid-level class which communicates between business logic
-    and analysis. This class ensemble the required class and pass the object of
-    various classes like MetaData, DescriptiveDetails to the analysis with the
+    and analysis2. This class ensemble the required class and pass the object of
+    various classes like MetaData, DescriptiveDetails to the analysis2 with the
     attributes and methods.
 
     Attributes:
@@ -160,7 +160,7 @@ class AnalysisModel:
 
     def init_analyzer(self) -> None:
         """ Initialize the Analyzer class """
-        self._analyzer_obj = Analyzer(self._df)
+        self._analyzer_obj = AnalysisUtil(self._df)
         self.filtered_df = self._analyzer_obj.filtered_df
 
     def set_correlation(self) -> None:
@@ -196,11 +196,11 @@ class AnalysisModel:
         return self.date_df
 
     def set_category_analysis(self, col_name) -> None:
-        """ Set the categorical analysis values """
+        """ Set the categorical analysis2 values """
         self.cat_num_analyzer, self.cat_cat_analyzer, self.date_numeric_analyzer = self._analyzer_obj.analyze_category(col_name)
 
     def get_category_analysis(self, col_name, type_analysis='all') -> Any:
-        """ Get the analysis for categorical column """
+        """ Get the analysis2 for categorical column """
         self.set_category_analysis(col_name)
         if type_analysis == 'numeric':
             return self.cat_num_analyzer
@@ -230,7 +230,7 @@ class AnalysisModel:
         self.decile_cat_analysis, self.decile_numeric_analysis, self.decile_date_analysis = self._analyzer_obj.decile_numeric_analysis(col)
 
     def get_decile_analysis(self, col_name: str, type_analysis='all'):
-        """ Return the analysis done for the deciling system """
+        """ Return the analysis2 done for the deciling system """
         if type_analysis == 'numeric':
             return self.decile_numeric_analysis
         elif type_analysis == 'categorical':
