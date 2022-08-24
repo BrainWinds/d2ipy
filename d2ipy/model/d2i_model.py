@@ -1,15 +1,19 @@
 """
 This module applies various features to the dataframe object
 """
+import pandas as pd
+from typing import List, Dict, Any, Tuple
+
 from d2ipy.profiling import descriptive_util
 from d2ipy.profiling.descriptive_util import DescriptiveDetails
+from d2ipy.analyzer.analysis_util import AnalysisUtil
 
 
-class ModelD2I:
+class ProfileModel:
     """
     This is the mid-level class which communicates between business logic
-    and api. This class ensemble the required class and pass the object of
-    various classes like MetaData, DescriptiveDetails to the api with the
+    and analysis2. This class ensemble the required class and pass the object of
+    various classes like MetaData, DescriptiveDetails to the analysis2 with the
     attributes and methods.
 
     Attributes:
@@ -133,3 +137,112 @@ class ModelD2I:
             raise
 
         return res
+
+
+class AnalysisModel:
+    def __init__(self, df):
+        self._df = df
+        self.filtered_df = None
+        self._analyzer_obj = None
+        self._corr_matrix = None
+        self._cov_matrix = None
+        self.date_df = None
+        self.date_dist = None
+        self.cat_num_analyzer = None
+        self.cat_cat_analyzer = None
+        self.date_numeric_analyzer = None
+        self.cat_grp_analysis = None
+        self.decile_cat_analysis = None
+        self.decile_numeric_analysis = None
+        self.decile_date_analysis = None
+
+        self.init_analyzer()
+
+    def init_analyzer(self) -> None:
+        """ Initialize the Analyzer class """
+        self._analyzer_obj = AnalysisUtil(self._df)
+        self.filtered_df = self._analyzer_obj.filtered_df
+
+    def set_correlation(self) -> None:
+        """ Set the correlation values """
+        self._corr_matrix = self._analyzer_obj.get_correlation()
+
+    def get_correlation(self) -> dict:
+        """ Return the correlation matrix """
+        self.set_correlation()
+        return self._corr_matrix
+
+    def set_covariance(self) -> None:
+        """ Set the covariance matrix """
+        self._cov_matrix = self._analyzer_obj.get_covariance()
+
+    def get_covariance(self) -> pd.DataFrame:
+        """ Return the covariance matrix """
+        self.set_covariance()
+        return self._cov_matrix
+
+    def set_date_distribution(self) -> None:
+        """ Set the date distribution of the dataframe """
+        self.date_dist, self.date_df = self._analyzer_obj.date_distribution()
+
+    @property
+    def get_date_distribution(self) -> None:
+        """Get the date distribution"""
+        self.set_date_distribution()
+        return self.date_dist
+
+    def get_date_df(self):
+        """ Return the date part of the dataframe """
+        return self.date_df
+
+    def set_category_analysis(self, col_name) -> None:
+        """ Set the categorical analysis2 values """
+        self.cat_num_analyzer, self.cat_cat_analyzer, self.date_numeric_analyzer = self._analyzer_obj.analyze_category(col_name)
+
+    def get_category_analysis(self, col_name, type_analysis='all') -> Any:
+        """ Get the analysis2 for categorical column """
+        self.set_category_analysis(col_name)
+        if type_analysis == 'numeric':
+            return self.cat_num_analyzer
+        elif type_analysis == 'categorical':
+            return self.cat_cat_analyzer
+        elif type_analysis == 'date':
+            return self.date_numeric_analyzer
+        elif type_analysis == 'all':
+            return {
+                "category_category": self.cat_cat_analyzer,
+                "category_numeric": self.cat_num_analyzer,
+                "category_date": self.date_numeric_analyzer
+            }
+        else:
+            raise
+
+    def set_category_grp_details(self, cols: List) -> None:
+        """ Set the group by categorical column"""
+        self.cat_grp_analysis = self._analyzer_obj.get_category_details(cols)
+
+    def get_category_details(self, cols: List) -> pd.DataFrame:
+        self.set_category_grp_details(cols)
+        return self.cat_grp_analysis
+
+    def set_decile_analysis(self, col: str) -> None:
+        """ Set various output for deciling the numeric variable """
+        self.decile_cat_analysis, self.decile_numeric_analysis, self.decile_date_analysis = self._analyzer_obj.decile_numeric_analysis(col)
+
+    def get_decile_analysis(self, col_name: str, type_analysis='all'):
+        """ Return the analysis2 done for the deciling system """
+        if type_analysis == 'numeric':
+            return self.decile_numeric_analysis
+        elif type_analysis == 'categorical':
+            return self.decile_cat_analysis
+        elif type_analysis == 'date':
+            return self.decile_date_analysis
+        elif type_analysis == 'all':
+            return {
+                "decile_category": self.decile_cat_analysis,
+                "decile_numeric": self.decile_numeric_analysis,
+                "decile_date": self.decile_date_analysis
+            }
+        else:
+            raise
+

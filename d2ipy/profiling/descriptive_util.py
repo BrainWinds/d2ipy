@@ -2,7 +2,7 @@
 This module is for explaining descriptive stats of a dataframe.
 """
 import sys
-from typing import Dict, Any, Union
+from typing import Dict, Any, Union, List
 
 import pandas as pd
 from numpy import ndarray
@@ -119,7 +119,9 @@ class DescriptiveDetails:
 
     def __init__(self, df: pd.DataFrame) -> None:
         """Initializer of the class DescriptiveDetails"""
+        self._df = None
         self._obj_cols = None
+        self._dt_cols = None
         self._df_full = df
         self._col_meta = pd.DataFrame()
         self._num_col_df = None
@@ -167,6 +169,7 @@ class DescriptiveDetails:
         self._df = self._df_full[self._eligible_cols]
 
     def get_col_type(self):
+        """ Store the values as numeric, categorical or date """
         self._num_cols = self._col_meta.loc[(self._col_meta['is_eligible'] == True) &
                                             ((self._col_meta["present_datatype"] == int)
                                              | (self._col_meta["present_datatype"] == float)),
@@ -185,6 +188,9 @@ class DescriptiveDetails:
             self._num_col_df = self._df_full[self._num_cols]
         else:
             self._num_col_df = pd.DataFrame()
+
+    def get_df(self):
+        return self._df
 
     def get_descriptive_stat(self) -> dict:
         """Return the self._descriptive_dict"""
@@ -252,29 +258,20 @@ class DescriptiveDetails:
             top_5_category = obj_df[col_name].value_counts()[:5]
             memory_size = sys.getsizeof(obj_df[col_name])
             self._obj_cols_dict[col_name] = {
-                "value_counts": memory_size,
+                "value_counts": val_counts,
                 "category_distribution": category_distribution,
                 "top_5_category": top_5_category,
                 "memory_size": memory_size,
             }
         return self._obj_cols_dict
 
-    def get_date_details(self) -> dict:
+    def get_date_details(self) -> List[Dict[str, Any]]:
         """Return the self._date_col_details"""
         res_ls = []
         for col in self._dt_cols:
             min_date = self._df[col].min()
             max_date = self._df[col].max()
             range_date = max_date - min_date
-            yrs = self._df[col].dt.year.value_counts()
-            months = self._df[col].dt.month.value_counts()
-            days = self._df[col].dt.month.value_counts()
-            mon_yr = (
-                self._df[col].dt.month.astype(str)
-                + "-"
-                + self._df[col].dt.year.astype(str)
-            )
-            mon_yr_dist = mon_yr.value_counts()
             date_dist = self._df[col].value_counts()
             top_5_date = self._df[col].value_counts()[:5]
             self._date_col_details = {
@@ -282,10 +279,6 @@ class DescriptiveDetails:
                 "min_date": min_date,
                 "max_date": max_date,
                 "date_range": range_date,
-                "years": yrs,
-                "months": months,
-                "days": days,
-                "month_yr_dist": mon_yr_dist,
                 "date_dist": date_dist,
                 "top_5_date": top_5_date,
             }

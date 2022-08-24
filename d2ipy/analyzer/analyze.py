@@ -1,16 +1,16 @@
 from d2ipy.data_source_connection import read_flat_file
-from d2ipy.model.d2i_model import ProfileModel
+from d2ipy.model.d2i_model import AnalysisModel
 
 
-class Profiling:
+class Analyzer:
     def __init__(self):
         pass
 
-    def read_csv(self, csv_path):
+    def read_csv(self, csv_path: str) -> object:
         csv_reader = read_flat_file.ReadCSV(csv_path)
         df_shape = csv_reader.get_df_size()
         _df = csv_reader.get_df()
-        dq_obj = ProfileModel(_df)
+        dq_obj = AnalysisModel(_df)
         return dq_obj
 
     def read_excel(self, excel_path):
@@ -20,5 +20,5 @@ class Profiling:
         res_dict = {}
         for sheet in sheet_names:
             _df = excel_reader.read_sheet(sheet)
-            res_dict[sheet] = ProfileModel(_df)
+            res_dict[sheet] = AnalysisModel(_df)
         return res_dict
