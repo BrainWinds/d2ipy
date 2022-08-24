@@ -6,7 +6,7 @@ from typing import List, Dict, Any, Tuple
 
 from d2ipy.profiling import descriptive_util
 from d2ipy.profiling.descriptive_util import DescriptiveDetails
-from d2ipy.analysis.analysis_util import AnalysisUtil
+from d2ipy.analyzer.analysis_util import AnalysisUtil
 
 
 class ProfileModel:

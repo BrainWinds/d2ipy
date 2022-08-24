@@ -5,7 +5,7 @@ __email__ = ''
 __version__ = '0.1.0'
 
 from d2ipy.profiling import profiling
-from d2ipy.analysis import analyze
+from d2ipy.analyzer import analyze
 
 __all__ = [
     "profiling",
