@@ -258,7 +258,7 @@ class DescriptiveDetails:
             top_5_category = obj_df[col_name].value_counts()[:5]
             memory_size = sys.getsizeof(obj_df[col_name])
             self._obj_cols_dict[col_name] = {
-                "value_counts": memory_size,
+                "value_counts": val_counts,
                 "category_distribution": category_distribution,
                 "top_5_category": top_5_category,
                 "memory_size": memory_size,
