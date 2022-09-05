@@ -150,31 +150,24 @@ class DescriptiveDetails:
         self._col_meta["unique_rate"] = \
             (self._df_full.fillna(0).nunique()) * 100 / len(self._df_full)
 
+        eligible_cond = (self._col_meta['non_null_count'] != 0) & \
+                        (self._col_meta['num_unique'] != 1) & \
+                        (self._col_meta['num_unique'] != self._col_meta['non_null_count'])
+        self._col_meta['is_eligible'] = False
+        self._col_meta.loc[eligible_cond, 'is_eligible'] = True
         self._col_meta = self._col_meta.reset_index()
         return self._col_meta
 
-    def get_eligible_cols(self) -> None:
-        """
-        Modify the dataframe object to take the sliced dataframe
-        with eligible
-        """
-
-        self._eligible_cols = self._col_meta.loc[
-            (self._col_meta["non_null_count"] != 0)
-            | (self._col_meta["num_unique"] != 1),
-            "columns",
-        ].tolist()
-        self._col_meta['is_eligible'] = False
-        self._col_meta.loc[self._col_meta['columns'].isin(self._eligible_cols), 'is_eligible'] = True
+    def get_eligible_cols(self):
+        self._eligible_cols = self._col_meta.loc[self._col_meta['is_eligible'] == True, 'columns'].tolist()
         self._df = self._df_full[self._eligible_cols]
 
     def get_col_type(self):
         """ Store the values as numeric, categorical or date """
         self._num_cols = self._col_meta.loc[(self._col_meta['is_eligible'] == True) &
-                                            ((self._col_meta["present_datatype"] == int)
-                                             | (self._col_meta["present_datatype"] == float)),
-                                            "columns",
-        ].tolist()
+                                            ((self._col_meta["present_datatype"] == 'int64')
+                                             | (self._col_meta["present_datatype"] == 'float64')),
+                                            "columns"].tolist()
 
         self._obj_cols = self._col_meta.loc[
             (self._col_meta["present_datatype"] == "object") & (self._col_meta["is_eligible"] == True), "columns"
@@ -282,6 +275,5 @@ class DescriptiveDetails:
                 "date_dist": date_dist,
                 "top_5_date": top_5_date,
             }
-
             res_ls.append(self._date_col_details)
         return res_ls
